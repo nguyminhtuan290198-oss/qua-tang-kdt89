@@ -3,7 +3,12 @@ import { COMPANY_INFO } from '../data/products';
 import { Phone, MessageCircle, MapPin, Calendar, AlertCircle } from 'lucide-react';
 import { KDTLogo } from './KDTLogo';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenAdminLogin?: () => void;
+  isAdmin?: boolean;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenAdminLogin, isAdmin = false }) => {
   return (
     <footer className="bg-neutral-900 text-neutral-300 pt-12 pb-24 md:pb-12 border-t border-neutral-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -81,13 +86,26 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Mandatory Policy Note */}
-        <div className="pt-6 flex items-start gap-2.5 text-xs text-neutral-400">
-          <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">
-            <strong className="text-neutral-200">Ghi chú quan trọng: </strong>
-            Số lượng có hạn, giá và điều kiện lắp đặt cần được sale xác nhận trước khi chốt đơn.
-          </p>
+        {/* Mandatory Policy Note & Admin Link */}
+        <div className="pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-neutral-400">
+          <div className="flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">
+              <strong className="text-neutral-200">Ghi chú quan trọng: </strong>
+              Số lượng có hạn, giá và điều kiện lắp đặt cần được sale xác nhận trước khi chốt đơn.
+            </p>
+          </div>
+
+          {onOpenAdminLogin && (
+            <button
+              type="button"
+              onClick={onOpenAdminLogin}
+              className="text-[11px] text-neutral-500 hover:text-amber-400 transition-colors whitespace-nowrap self-end sm:self-auto cursor-pointer"
+              title="Đăng nhập dành cho Quản trị viên KDT-89"
+            >
+              {isAdmin ? '👑 Quyền Admin (Đang bật)' : '🔒 Quản trị viên KDT-89'}
+            </button>
+          )}
         </div>
       </div>
     </footer>

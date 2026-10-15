@@ -13,8 +13,13 @@ interface CategorySectionProps {
   products: ProductItem[];
   icon: React.ReactNode;
   selectedProductIds: string[];
+  customImages?: Record<string, string>;
   onToggleProduct: (product: ProductItem) => void;
   onConsultProduct?: (product: ProductItem) => void;
+  onOpenImageUpdater?: (product: ProductItem) => void;
+  isAdmin?: boolean;
+  hiddenProductIds?: string[];
+  onToggleHideProduct?: (product: ProductItem) => void;
 }
 
 export const CategorySection: React.FC<CategorySectionProps> = ({
@@ -22,8 +27,13 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
   products,
   icon,
   selectedProductIds,
+  customImages = {},
   onToggleProduct,
   onConsultProduct,
+  onOpenImageUpdater,
+  isAdmin = false,
+  hiddenProductIds = [],
+  onToggleHideProduct,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -39,6 +49,16 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
     }
   };
 
+  const visibleProducts = products.filter((p) => !hiddenProductIds.includes(p.id));
+  const hiddenCount = products.length - visibleProducts.length;
+
+  // If customer view and all products in this category are hidden, do not display empty section
+  if (!isAdmin && visibleProducts.length === 0) {
+    return null;
+  }
+
+  const productsToRender = isAdmin ? products : visibleProducts;
+
   return (
     <div className="scroll-mt-24">
       {/* Category Header */}
@@ -49,12 +69,20 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               {icon}
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="font-bold text-base sm:text-lg text-neutral-900">
                   {category.name}
                 </h3>
                 <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/60">
-                  {products.length} món sẵn kho
+                  {isAdmin ? (
+                    hiddenCount > 0 ? (
+                      <span>Khách thấy {visibleProducts.length}/{products.length} món ({hiddenCount} đã ẩn)</span>
+                    ) : (
+                      <span>{products.length} món sẵn kho</span>
+                    )
+                  ) : (
+                    <span>{visibleProducts.length} món sẵn kho</span>
+                  )}
                 </span>
               </div>
               <p className="text-xs text-rose-700 font-medium">
@@ -108,16 +136,21 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
         ref={scrollRef}
         className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar pb-3 pt-1 gap-3.5 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5 sm:overflow-visible"
       >
-        {products.map((product) => (
+        {productsToRender.map((product) => (
           <div
             key={product.id}
             className="w-[80vw] max-w-[295px] shrink-0 snap-center sm:w-auto sm:shrink sm:snap-align-none flex flex-col"
           >
             <ProductCard
               product={product}
+              customImage={customImages[product.id]}
               onSelect={onToggleProduct}
               onConsultProduct={onConsultProduct}
+              onOpenImageUpdater={onOpenImageUpdater}
               isSelected={selectedProductIds.includes(product.id)}
+              isAdmin={isAdmin}
+              isHidden={hiddenProductIds.includes(product.id)}
+              onToggleHide={onToggleHideProduct}
             />
           </div>
         ))}

@@ -3,20 +3,32 @@ import { CATEGORIES, PRODUCTS, ProductItem } from '../data/products';
 import { ProductCard } from './ProductCard';
 import { CategorySection } from './CategorySection';
 import { BudgetFilter } from './BudgetFilter';
-import { Search, Sparkles, Flame, Droplets, Wind, UtensilsCrossed, LayoutGrid, Columns, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Sparkles, Flame, Droplets, Wind, UtensilsCrossed, LayoutGrid, Columns, ChevronLeft, ChevronRight, Camera, Tv, Eye, EyeOff } from 'lucide-react';
 
 interface ProductCatalogProps {
   selectedProductIds: string[];
+  customImages?: Record<string, string>;
   onToggleProduct: (product: ProductItem) => void;
   onConsultProduct?: (product: ProductItem) => void;
+  onOpenImageUpdater?: (product: ProductItem) => void;
   onOpenConsultation: () => void;
+  isAdmin?: boolean;
+  hiddenProductIds?: string[];
+  onToggleHideProduct?: (productId: string) => void;
+  onOpenManageVisibility?: () => void;
 }
 
 export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   selectedProductIds,
+  customImages = {},
   onToggleProduct,
   onConsultProduct,
+  onOpenImageUpdater,
   onOpenConsultation,
+  isAdmin = false,
+  hiddenProductIds = [],
+  onToggleHideProduct,
+  onOpenManageVisibility,
 }) => {
   const [activeCategoryTab, setActiveCategoryTab] = useState<string>('all');
   const [selectedBudget, setSelectedBudget] = useState<string>('all');
@@ -31,11 +43,15 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     kitchen_stoves: <Flame className="w-4 h-4 text-rose-600" />,
     water_heaters: <Droplets className="w-4 h-4 text-sky-600" />,
     air_conditioners: <Wind className="w-4 h-4 text-teal-600" />,
+    televisions: <Tv className="w-4 h-4 text-indigo-600" />,
   };
 
-  // Filter products
+  // Filter products: For regular customers, completely hide products marked as hidden
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
+      if (!isAdmin && hiddenProductIds.includes(p.id)) {
+        return false;
+      }
       const matchCategory =
         activeCategoryTab === 'all' || p.category === activeCategoryTab;
       const matchBudget =
@@ -48,7 +64,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
 
       return matchCategory && matchBudget && matchSearch;
     });
-  }, [activeCategoryTab, selectedBudget, searchQuery]);
+  }, [activeCategoryTab, selectedBudget, searchQuery, isAdmin, hiddenProductIds]);
 
   const scrollFilteredLeft = () => {
     if (filteredScrollRef.current) {
@@ -82,24 +98,58 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             </p>
           </div>
 
-          {/* Quick Search */}
-          <div className="w-full md:w-72 relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm nhanh model: CR-1021, Sanaky..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-neutral-300 text-xs sm:text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 shadow-xs"
-            />
-            <Search className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
-            {searchQuery && (
+          {/* Action Row: Quick Search, Image Updater & Visibility Manager */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            {/* Admin Visibility Manager button */}
+            {isAdmin && onOpenManageVisibility && (
               <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-3 text-xs text-neutral-400 hover:text-neutral-600"
+                type="button"
+                onClick={onOpenManageVisibility}
+                className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white text-xs sm:text-sm font-bold shadow-xs transition-all shrink-0 cursor-pointer active:scale-95"
+                title="Quyền Admin: Quản lý ẩn/hiện sản phẩm với khách hàng"
               >
-                Xóa
+                <EyeOff className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Ẩn/Hiện sản phẩm</span>
+                {hiddenProductIds.length > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-neutral-950 font-black text-[10px]">
+                    {hiddenProductIds.length} ẩn
+                  </span>
+                )}
               </button>
             )}
+
+            {/* Only Admin sees the quick image updater button */}
+            {isAdmin && onOpenImageUpdater && (
+              <button
+                type="button"
+                onClick={() => onOpenImageUpdater(PRODUCTS[0])}
+                className="flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold border-2 border-amber-600 shadow-xs transition-all shrink-0 cursor-pointer active:scale-95"
+                title="Quyền Admin: Bấm để mở bảng tải ảnh hoặc dán link ảnh mới"
+              >
+                <Camera className="w-4 h-4 text-white shrink-0" />
+                <span>Cập nhật hình ({Object.keys(customImages).length > 0 ? `${Object.keys(customImages).length} đã đổi` : 'Chọn ảnh'})</span>
+              </button>
+            )}
+
+            {/* Quick Search */}
+            <div className="w-full sm:w-64 md:w-72 relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Tìm nhanh model: CR-1021, Casper..."
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-neutral-300 text-xs sm:text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 shadow-xs"
+              />
+              <Search className="w-4 h-4 text-neutral-400 absolute left-3 top-3" />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-3 text-xs text-neutral-400 hover:text-neutral-600"
+                >
+                  Xóa
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -124,11 +174,11 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   : 'bg-white hover:bg-neutral-100 text-neutral-700 border border-neutral-200'
               }`}
             >
-              Tất cả 4 nhóm quà ({PRODUCTS.length})
+              Tất cả các nhóm quà ({isAdmin ? PRODUCTS.length : PRODUCTS.filter(p => !hiddenProductIds.includes(p.id)).length})
             </button>
 
             {CATEGORIES.map((cat) => {
-              const count = PRODUCTS.filter((p) => p.category === cat.id).length;
+              const count = PRODUCTS.filter((p) => p.category === cat.id && (isAdmin ? true : !hiddenProductIds.includes(p.id))).length;
               const isActive = activeCategoryTab === cat.id;
               return (
                 <button
@@ -202,7 +252,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             </button>
           </div>
         ) : isDefaultFullView ? (
-          // Full 4 groups with dedicated horizontal swipe per category
+          // Full 5 groups with dedicated horizontal swipe per category
           <div className="space-y-10">
             {CATEGORIES.map((category) => {
               const catProducts = PRODUCTS.filter((p) => p.category === category.id);
@@ -213,8 +263,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   products={catProducts}
                   icon={categoryIcons[category.id]}
                   selectedProductIds={selectedProductIds}
+                  customImages={customImages}
                   onToggleProduct={onToggleProduct}
                   onConsultProduct={onConsultProduct}
+                  onOpenImageUpdater={onOpenImageUpdater}
+                  isAdmin={isAdmin}
+                  hiddenProductIds={hiddenProductIds}
+                  onToggleHideProduct={(product) => onToggleHideProduct?.(product.id)}
                 />
               );
             })}
@@ -268,9 +323,14 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                 >
                   <ProductCard
                     product={product}
+                    customImage={customImages[product.id]}
                     onSelect={onToggleProduct}
                     onConsultProduct={onConsultProduct}
+                    onOpenImageUpdater={onOpenImageUpdater}
                     isSelected={selectedProductIds.includes(product.id)}
+                    isAdmin={isAdmin}
+                    isHidden={hiddenProductIds.includes(product.id)}
+                    onToggleHide={(p) => onToggleHideProduct?.(p.id)}
                   />
                 </div>
               ))}

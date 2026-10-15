@@ -1,20 +1,34 @@
 import React from 'react';
-import { ShieldCheck, Package, Truck, Wrench, CheckCircle2, PhoneCall, Plus } from 'lucide-react';
+import { ShieldCheck, Package, Truck, Wrench, CheckCircle2, PhoneCall, Plus, Camera, Tv, Eye, EyeOff } from 'lucide-react';
 import { ProductItem } from '../data/products';
 
 interface ProductCardProps {
   product: ProductItem;
   onSelect: (product: ProductItem) => void;
   onConsultProduct?: (product: ProductItem) => void;
+  onOpenImageUpdater?: (product: ProductItem) => void;
+  customImage?: string;
   isSelected?: boolean;
+  isAdmin?: boolean;
+  isHidden?: boolean;
+  onToggleHide?: (product: ProductItem) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onSelect,
   onConsultProduct,
+  onOpenImageUpdater,
+  customImage,
   isSelected,
+  isAdmin = false,
+  isHidden = false,
+  onToggleHide,
 }) => {
+  // If not admin and product is marked as hidden, do not render to regular customers
+  if (!isAdmin && isHidden) {
+    return null;
+  }
   // Category-specific visual icon/illustration representation
   const renderProductIllustration = () => {
     switch (product.category) {
@@ -72,6 +86,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <span className="text-[11px] font-medium text-teal-900 tracking-tight">Máy lạnh làm mát</span>
           </div>
         );
+      case 'televisions':
+        return (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-100/40 p-4 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-white shadow-xs border border-indigo-200/60 flex items-center justify-center text-indigo-600 mb-2">
+              <Tv className="w-8 h-8" />
+            </div>
+            <span className="text-[11px] font-medium text-indigo-900 tracking-tight">Smart Tivi giải trí</span>
+          </div>
+        );
       default:
         return null;
     }
@@ -80,16 +103,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       className={`group flex flex-col rounded-2xl bg-white border transition-all duration-200 overflow-hidden shadow-xs hover:shadow-md ${
-        isSelected ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-neutral-200 hover:border-neutral-300'
+        isHidden
+          ? 'border-amber-400 bg-amber-50/15 ring-2 ring-amber-400/30'
+          : isSelected
+          ? 'border-rose-500 ring-2 ring-rose-500/20'
+          : 'border-neutral-200 hover:border-neutral-300'
       }`}
     >
       {/* Product Image Area */}
       <div className="relative aspect-[16/11] w-full overflow-hidden border-b border-neutral-150 bg-neutral-100">
-        {product.imageUrl ? (
+        {(customImage || product.imageUrl) ? (
           <img
-            src={product.imageUrl}
+            src={customImage || product.imageUrl}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className={`w-full h-full object-cover transition-transform duration-300 ${
+              isHidden ? 'grayscale-[40%] group-hover:scale-100' : 'group-hover:scale-105'
+            }`}
             referrerPolicy="no-referrer"
             loading="lazy"
             onError={(e) => {
@@ -102,28 +131,106 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
 
         {/* Clean category label */}
-        <div className="absolute top-2.5 left-2.5 bg-neutral-900/85 backdrop-blur-xs text-white text-[10px] font-medium px-2 py-0.5 rounded shadow-xs">
+        <div className="absolute top-2.5 left-2.5 bg-neutral-900/85 backdrop-blur-xs text-white text-[10px] font-medium px-2 py-0.5 rounded shadow-xs z-10">
           {product.categoryLabel}
         </div>
 
-        {/* Highlight Tag */}
-        {product.highlightTag && (
-          <div className="absolute top-2.5 right-2.5 bg-rose-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow-xs">
-            {product.highlightTag}
-          </div>
+        {/* Top-Right: Status & Actions */}
+        {isAdmin ? (
+          isHidden ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleHide?.(product);
+              }}
+              className="absolute top-2.5 right-2.5 z-20 px-2 py-1 rounded-lg bg-amber-600 hover:bg-emerald-600 text-white text-[10px] font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer active:scale-95 group/btn"
+              title="Sản phẩm đang ẩn với khách. Bấm để BẬT HIỆN LẠI"
+            >
+              <EyeOff className="w-3 h-3 group-hover/btn:hidden" />
+              <Eye className="w-3 h-3 hidden group-hover/btn:inline" />
+              <span className="group-hover/btn:hidden">Đã ẩn · Bấm hiện</span>
+              <span className="hidden group-hover/btn:inline">Hiện lại ngay</span>
+            </button>
+          ) : (
+            <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1">
+              {product.highlightTag && (
+                <div className="bg-rose-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow-xs">
+                  {product.highlightTag}
+                </div>
+              )}
+              {onToggleHide && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleHide(product);
+                  }}
+                  className="px-1.5 py-0.5 rounded bg-neutral-900/80 hover:bg-rose-600 text-neutral-200 hover:text-white text-[10px] font-medium flex items-center gap-0.5 shadow-xs transition-colors cursor-pointer"
+                  title="Quyền Admin: Bấm để ẨN món này khỏi khách hàng"
+                >
+                  <EyeOff className="w-3 h-3 text-amber-300" />
+                  <span>Ẩn</span>
+                </button>
+              )}
+            </div>
+          )
+        ) : (
+          product.highlightTag && (
+            <div className="absolute top-2.5 right-2.5 bg-rose-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow-xs">
+              {product.highlightTag}
+            </div>
+          )
         )}
 
-        {/* Model badge at bottom of image if available */}
+        {/* Model badge at bottom left of image */}
         {product.modelCode && (
           <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs text-neutral-800 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded border border-neutral-200">
             Mã: {product.modelCode}
           </div>
+        )}
+
+        {/* Quick Camera Update Button - ONLY visible for Admin */}
+        {isAdmin && onOpenImageUpdater && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenImageUpdater(product);
+            }}
+            className="absolute bottom-2 right-2 px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white border border-amber-600 shadow-sm transition-all flex items-center gap-1 text-[10px] font-bold cursor-pointer active:scale-95"
+            title="Quyền Admin: Bấm để tải ảnh mới từ máy hoặc dán link ảnh"
+          >
+            <Camera className="w-3.5 h-3.5 text-white shrink-0" />
+            <span>Đổi ảnh</span>
+          </button>
         )}
       </div>
 
       {/* Card Content */}
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
+          {/* Admin Hidden notice in card */}
+          {isAdmin && isHidden && (
+            <div className="mb-2 p-1.5 rounded-lg bg-amber-100/90 border border-amber-300 text-amber-900 text-[10px] font-bold flex items-center justify-between">
+              <span className="flex items-center gap-1">
+                <EyeOff className="w-3 h-3 text-amber-700" />
+                <span>Đã ẩn với khách hàng</span>
+              </span>
+              {onToggleHide && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleHide(product);
+                  }}
+                  className="underline hover:text-emerald-700 cursor-pointer ml-1 text-emerald-800"
+                >
+                  Hiện lại
+                </button>
+              )}
+            </div>
+          )}
           {/* Product Name */}
           <h3 className="font-bold text-base text-neutral-900 tracking-tight line-clamp-2 leading-snug">
             {product.name}

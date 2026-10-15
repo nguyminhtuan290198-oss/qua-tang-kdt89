@@ -2,7 +2,7 @@ export interface ProductItem {
   id: string;
   name: string;
   modelCode?: string;
-  category: 'rice_cooker_appliances' | 'kitchen_stoves' | 'water_heaters' | 'air_conditioners';
+  category: 'rice_cooker_appliances' | 'kitchen_stoves' | 'water_heaters' | 'air_conditioners' | 'televisions';
   categoryLabel: string;
   budgetTier: '<1m' | '1m-2m' | '2m-4m' | '>4m';
   budgetLabel: string;
@@ -35,6 +35,8 @@ export const HERO_IMAGE = '/src/assets/images/hero_family_gift_1791983319829.jpg
 export const COMBO_MOM_IMAGE = '/src/assets/images/combo_rice_cooker_gift_1791983319681.jpg';
 export const COMBO_KITCHEN_IMAGE = '/src/assets/images/combo_warm_kitchen_induction_1791983321206.jpg';
 export const COMBO_COOL_IMAGE = '/src/assets/images/combo_cool_air_conditioner_1791983322621.jpg';
+export const IMG_SMART_TV_LIVING_ROOM = '/src/assets/images/smart_tv_living_room_1792035624606.jpg';
+export const IMG_SMART_TV_PRODUCT = '/src/assets/images/casper_smart_tv_product_1792035644185.jpg';
 
 // Dedicated exact product model photos
 export const IMG_CUCKOO_CR1021_WHITE = '/src/assets/images/cuckoo_cr1021_white_1792031605550.jpg';
@@ -76,6 +78,12 @@ export const CATEGORIES = [
     name: 'Máy lạnh – nâng cấp không gian sống',
     subTitle: 'Giá chương trình đã bao gồm phần hỗ trợ công lắp và vận chuyển theo khu vực áp dụng.',
     tagline: 'Không gian mát lành, êm ái cho giấc ngủ trọn vẹn của cả gia đình.',
+  },
+  {
+    id: 'televisions',
+    name: 'Tivi – Giải trí sum vầy gia đình',
+    subTitle: 'Bao gồm hỗ trợ công giao lắp theo khu vực áp dụng; vật tư giá treo tính riêng nếu có.',
+    tagline: 'Màn hình 4K sống động, mẹ xem phim truyền hình, vợ con sum vầy ấm cúng mỗi tối.',
   },
 ] as const;
 
@@ -127,6 +135,22 @@ export const COMBOS: ComboItem[] = [
     deliveryCondition: 'Giá chương trình đã bao gồm phần hỗ trợ công lắp và vận chuyển theo khu vực áp dụng.',
     description: 'Giấc ngủ sâu mát mẻ, xua tan oi bức mệt nhọc cho người phụ nữ đã đồng hành cùng anh suốt năm.',
     recommendFor: 'Lắp nhanh, máy chạy êm, chế độ bảo hành rõ ràng từ KDT-89.',
+  },
+  {
+    id: 'combo-sum-vay',
+    name: 'Combo Sum vầy',
+    subtitle: 'Smart Tivi Casper 43/50 inch + Gói hỗ trợ giao lắp',
+    targetAudience: 'Tặng Cả gia đình / Mẹ & Vợ',
+    itemsIncluded: [
+      'Smart Tivi Casper chính hãng tràn viền Full HD / 4K',
+      'Hỗ trợ công giao lắp và kiểm tra tín hiệu tận nhà',
+      'Bảo hành chính hãng 24 tháng tận tâm',
+    ],
+    image: IMG_SMART_TV_LIVING_ROOM,
+    priceNote: '[Liên hệ Sale nhận giá thợ]',
+    deliveryCondition: 'Bao gồm hỗ trợ công giao lắp theo khu vực áp dụng; giá treo tính riêng nếu có.',
+    description: 'Nâng cấp phòng khách gia đình, món quà gắn kết tình cảm mẹ và con cái sau mỗi ngày làm việc vất vả.',
+    recommendFor: 'Tivi to rõ, giọng nói tiếng Việt dễ dùng cho người lớn tuổi và trẻ nhỏ sum vầy.',
   },
 ];
 
@@ -635,6 +659,84 @@ export const PRODUCTS: ProductItem[] = [
     highlightTag: 'Dòng máy cơ bền khỏe · Giá tốt nhất',
     practicalValue: 'Dòng máy cơ làm mát cực nhanh, độ bền cao, chi phí bảo trì thấp.',
     specs: '1.0 HP Tiêu chuẩn · Độ bền cao · Dễ sửa chữa',
+  },
+
+  // 5. TIVI – GIẢI TRÍ SUM VẦY GIA ĐÌNH (Casper Smart TV 32, 43, 50, 55 inch)
+  {
+    id: 'prod-tivi-casper-32hga510',
+    name: 'Smart Tivi Casper 32 inch HD (32HGA510)',
+    modelCode: '32HGA510',
+    category: 'televisions',
+    categoryLabel: 'Smart Tivi',
+    budgetTier: '2m-4m',
+    budgetLabel: '2 – 4 triệu',
+    programPrice: '[Liên hệ Sale nhận giá thợ]',
+    referencePrice: '[Giá hãng]',
+    stockStatus: 'Sẵn kho: 12 cái',
+    stockCountNumber: 12,
+    warranty: '[Chính hãng Casper 24 tháng]',
+    deliveryCondition: 'Bao gồm hỗ trợ công giao lắp theo khu vực áp dụng; giá treo tính riêng nếu có.',
+    highlightTag: 'Gọn gàng cho phòng ngủ của mẹ',
+    practicalValue: 'Kích thước 32 inch nhỏ gọn, điều khiển giọng nói tiếng Việt mượt mà, mẹ lớn tuổi mở đài xem thời sự, cải lương chỉ bằng một câu nói.',
+    imageUrl: IMG_SMART_TV_PRODUCT,
+    specs: '32 inch · Độ phân giải HD · Hệ điều hành Android TV · Điều khiển giọng nói',
+  },
+  {
+    id: 'prod-tivi-casper-43fga610',
+    name: 'Smart Tivi Casper 43 inch Full HD (43FGA610)',
+    modelCode: '43FGA610',
+    category: 'televisions',
+    categoryLabel: 'Smart Tivi',
+    budgetTier: '2m-4m',
+    budgetLabel: '2 – 4 triệu',
+    programPrice: '[Liên hệ Sale nhận giá thợ]',
+    referencePrice: '[Giá hãng]',
+    stockStatus: 'Sẵn kho: 15 cái',
+    stockCountNumber: 15,
+    warranty: '[Chính hãng Casper 24 tháng]',
+    deliveryCondition: 'Bao gồm hỗ trợ công giao lắp theo khu vực áp dụng; giá treo tính riêng nếu có.',
+    highlightTag: 'Kích thước quốc dân · Bán chạy nhất',
+    practicalValue: 'Viền màn hình siêu mỏng, kích thước 43 inch chuẩn cho phòng khách ấm cúng hoặc phòng ngủ, kho ứng dụng phong phú xem phim cả ngày.',
+    imageUrl: IMG_SMART_TV_PRODUCT,
+    specs: '43 inch · Full HD tràn viền · Âm thanh vòm Dolby Audio · Kết nối Wifi/Bluetooth',
+  },
+  {
+    id: 'prod-tivi-casper-50uga610',
+    name: 'Smart Tivi Casper 50 inch 4K Ultra HD (50UGA610)',
+    modelCode: '50UGA610',
+    category: 'televisions',
+    categoryLabel: 'Smart Tivi',
+    budgetTier: '>4m',
+    budgetLabel: 'Trên 4 triệu',
+    programPrice: '[Liên hệ Sale nhận giá thợ]',
+    referencePrice: '[Giá hãng]',
+    stockStatus: 'Sẵn kho: 8 cái',
+    stockCountNumber: 8,
+    warranty: '[Chính hãng Casper 24 tháng]',
+    deliveryCondition: 'Bao gồm hỗ trợ công giao lắp theo khu vực áp dụng; giá treo tính riêng nếu có.',
+    highlightTag: 'Màn hình 4K sắc nét · Sang trọng',
+    practicalValue: 'Màn hình 4K HDR10 sống động, khung viền kim loại vô cực sang trọng, món quà 20/10 ý nghĩa cho cả nhà cùng quây quần bên mâm cơm tối.',
+    imageUrl: IMG_SMART_TV_LIVING_ROOM,
+    specs: '50 inch · 4K Ultra HD · Google TV thông minh · Tìm kiếm giọng nói tiếng Việt',
+  },
+  {
+    id: 'prod-tivi-casper-55uga610',
+    name: 'Smart Tivi Casper 55 inch 4K Ultra HD (55UGA610)',
+    modelCode: '55UGA610',
+    category: 'televisions',
+    categoryLabel: 'Smart Tivi',
+    budgetTier: '>4m',
+    budgetLabel: 'Trên 4 triệu',
+    programPrice: '[Liên hệ Sale nhận giá thợ]',
+    referencePrice: '[Giá hãng]',
+    stockStatus: 'Sẵn kho: 6 cái',
+    stockCountNumber: 6,
+    warranty: '[Chính hãng Casper 24 tháng]',
+    deliveryCondition: 'Bao gồm hỗ trợ công giao lắp theo khu vực áp dụng; giá treo tính riêng nếu có.',
+    highlightTag: 'Màn hình lớn 55 inch · Rạp phim tại gia',
+    practicalValue: 'Màn hình lớn 55 inch thỏa mãn mọi nhu cầu xem bóng đá của anh em và xem phim truyền hình chất lượng cao của vợ mẹ.',
+    imageUrl: IMG_SMART_TV_LIVING_ROOM,
+    specs: '55 inch · Màn hình 4K HDR vô cực · Âm thanh vòm sống động · Chip xử lý 4 nhân',
   },
 ];
 

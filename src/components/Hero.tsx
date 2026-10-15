@@ -1,13 +1,20 @@
 import React from 'react';
-import { Sparkles, ArrowRight, ShieldCheck, Truck, Clock, HeartHandshake } from 'lucide-react';
+import { Sparkles, ArrowRight, ShieldCheck, Truck, Clock, HeartHandshake, Camera } from 'lucide-react';
 import { HERO_IMAGE, COMPANY_INFO } from '../data/products';
 
 interface HeroProps {
   onOpenConsultation: (prefillNote?: string) => void;
   onExploreProducts: () => void;
+  onOpenImageUpdater?: () => void;
+  isAdmin?: boolean;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreProducts }) => {
+export const Hero: React.FC<HeroProps> = ({
+  onOpenConsultation,
+  onExploreProducts,
+  onOpenImageUpdater,
+  isAdmin = false,
+}) => {
   return (
     <section id="hero" className="relative pt-6 pb-12 sm:pt-10 sm:pb-16 bg-gradient-to-b from-rose-50/70 via-stone-50/50 to-neutral-50 overflow-hidden">
       {/* Subtle decorative warm background glow */}
@@ -46,9 +53,35 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation, onExploreProduct
                 🔥 Tiêu điểm thợ chọn:
               </span>
               <span className="text-neutral-700 font-medium">
-                Nồi cơm Cuckoo giá rẻ rẻ (từ ~5xxk - 7xxk) · Bếp từ & Bếp hồng ngoại không kén nồi · Kho sẵn 89-91 Đường số 1
+                Nồi cơm Cuckoo giá rẻ rẻ · Bếp từ & Hồng ngoại · Smart Tivi 32-55" · Máy lạnh · Kho sẵn 89-91 Đường số 1
               </span>
             </div>
+
+            {/* Quick Admin/Manager Banner for updating images - ONLY shown to Admin */}
+            {isAdmin && onOpenImageUpdater && (
+              <div className="mt-4 p-3 rounded-2xl bg-amber-50 border border-amber-300 shadow-xs flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs sm:text-sm font-bold text-amber-950">
+                      👑 Quyền Admin: Cập nhật hình ảnh sản phẩm
+                    </div>
+                    <div className="text-[11px] text-amber-800">
+                      (Chỉ tài khoản admin của anh mới thấy khung này)
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={onOpenImageUpdater}
+                  className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold whitespace-nowrap shadow-xs active:scale-95 transition-all cursor-pointer shrink-0"
+                >
+                  Cập nhật hình
+                </button>
+              </div>
+            )}
 
             {/* CTAs Group */}
             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

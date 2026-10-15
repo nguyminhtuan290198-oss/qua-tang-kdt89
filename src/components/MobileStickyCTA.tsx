@@ -1,15 +1,19 @@
 import React from 'react';
-import { Phone, Heart } from 'lucide-react';
+import { Phone, Heart, Camera } from 'lucide-react';
 import { COMPANY_INFO } from '../data/products';
 
 interface MobileStickyCTAProps {
   onOpenConsultation: () => void;
+  onOpenImageUpdater?: () => void;
   selectedCount: number;
+  isAdmin?: boolean;
 }
 
 export const MobileStickyCTA: React.FC<MobileStickyCTAProps> = ({
   onOpenConsultation,
+  onOpenImageUpdater,
   selectedCount,
+  isAdmin = false,
 }) => {
   return (
     <aside
@@ -17,13 +21,26 @@ export const MobileStickyCTA: React.FC<MobileStickyCTAProps> = ({
       className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-neutral-200 px-3 py-2 shadow-lg"
     >
       <div className="flex items-center gap-2 max-w-md mx-auto">
+        {/* ONLY visible to admin */}
+        {isAdmin && onOpenImageUpdater && (
+          <button
+            type="button"
+            onClick={onOpenImageUpdater}
+            className="flex flex-col items-center justify-center min-w-[50px] h-11 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors shrink-0 shadow-xs"
+            title="Quyền Admin: Cập nhật / Đổi hình ảnh sản phẩm"
+          >
+            <Camera className="w-4 h-4 text-white" />
+            <span className="text-[10px] font-bold mt-0.5">Đổi ảnh</span>
+          </button>
+        )}
+
         <a
           href="tel:[Điền số điện thoại]"
           className="flex flex-col items-center justify-center min-w-[48px] h-11 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors shrink-0"
           title="Gọi Hotline KDT-89"
         >
           <Phone className="w-4 h-4 text-rose-600" />
-          <span className="text-[10px] font-semibold mt-0.5">Gọi hotline</span>
+          <span className="text-[10px] font-semibold mt-0.5">Hotline</span>
         </a>
 
         <button
@@ -32,7 +49,7 @@ export const MobileStickyCTA: React.FC<MobileStickyCTAProps> = ({
         >
           <Heart className="w-4 h-4 fill-white/20 shrink-0" />
           <span className="truncate">
-            {selectedCount > 0 ? `Giữ ${selectedCount} món quà đã chọn` : 'Nhờ sale tư vấn & Giữ hàng'}
+            {selectedCount > 0 ? `Giữ ${selectedCount} món đã chọn` : 'Nhờ sale tư vấn & Giữ hàng'}
           </span>
         </button>
       </div>

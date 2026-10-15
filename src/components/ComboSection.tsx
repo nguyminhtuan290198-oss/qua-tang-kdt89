@@ -49,10 +49,10 @@ export const ComboSection: React.FC<ComboSectionProps> = ({ onSelectCombo }) => 
               <span>Gợi ý chuẩn bị quà nhanh</span>
             </div>
             <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-neutral-900 text-balance">
-              3 Combo quà tặng 20/10 được anh em chọn nhiều nhất
+              Các combo quà tặng 20/10 thiết thực được anh em chọn nhiều nhất
             </h2>
             <p className="mt-1.5 text-xs sm:text-base text-neutral-600">
-              Đã phối sẵn tinh tế, thiết thực – anh chỉ việc chọn, KDT-89 lo đóng gói kèm thiệp và giao đến nơi.
+              Đã phối sẵn tinh tế, thiết thực (Nồi cơm, Bếp điện, Smart Tivi, Máy lạnh) – anh chỉ việc chọn, KDT-89 lo đóng gói kèm thiệp và giao đến nơi.
             </p>
           </div>
 
@@ -60,7 +60,7 @@ export const ComboSection: React.FC<ComboSectionProps> = ({ onSelectCombo }) => 
           <div className="flex items-center justify-between md:justify-end gap-3 pt-1">
             <span className="md:hidden text-xs text-rose-700 font-semibold flex items-center gap-1 bg-rose-50 px-2.5 py-1 rounded-full">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Vuốt ngang xem 3 combo</span>
+              <span>Vuốt ngang xem các combo ({COMBOS.length})</span>
             </span>
 
             {/* Prev/Next arrows for quick thumb tap on mobile & desktop */}
@@ -87,11 +87,11 @@ export const ComboSection: React.FC<ComboSectionProps> = ({ onSelectCombo }) => 
           </div>
         </div>
 
-        {/* Carousel Container: Smooth Horizontal Scroll on mobile, 3-column grid on md+ */}
+        {/* Carousel Container: Smooth Horizontal Scroll on mobile, 4-column responsive grid on lg+ */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          className="flex md:grid md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory no-scrollbar pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0"
+          className="flex lg:grid lg:grid-cols-4 md:grid md:grid-cols-2 gap-4 sm:gap-6 overflow-x-auto lg:overflow-visible snap-x snap-mandatory no-scrollbar pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0"
         >
           {COMBOS.map((combo, idx) => (
             <div
